@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.example.day24_canvas_pracv1.model.OrderDetails;
 import com.example.day24_canvas_pracv1.model.Orders;
+import com.example.day24_canvas_pracv1.service.OrderService;
 
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +22,9 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping(path="/home")
 public class OrderController {
+
+    @Autowired
+    OrderService orderSvc;
 
     @GetMapping()
     public ModelAndView getIndex() {
@@ -110,6 +115,17 @@ public class OrderController {
         mav.setViewName("revieworder");
         mav.addObject("orderform", session.getAttribute("order"));
         mav.addObject("orderDetails", (List<OrderDetails>)session.getAttribute("orderDetails"));
+        return mav;
+    }
+
+    @GetMapping(path="/closeorder")
+    public ModelAndView closeOrder(HttpSession session) {
+        // Get details of both sessions
+        Orders orderSession = (Orders) session.getAttribute("order");
+        List<OrderDetails> orderDetailSession = (List<OrderDetails>) session.getAttribute("orderDetails");
+        orderSvc.makeOrder(orderSession, orderDetailSession);
+        session.invalidate();
+        ModelAndView mav = new ModelAndView("redirect:/home");
         return mav;
     }
 

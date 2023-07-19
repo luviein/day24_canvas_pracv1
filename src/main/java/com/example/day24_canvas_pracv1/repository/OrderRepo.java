@@ -24,6 +24,7 @@ public class OrderRepo {
     public Integer insertOrder(Orders order) {
         // To store generated PK of Orders
         KeyHolder generatedKey = new GeneratedKeyHolder();
+        System.out.println("order at orderrepo >>>>>>" + order);
         PreparedStatementCreator psc = new PreparedStatementCreator() {
 
             @Override
